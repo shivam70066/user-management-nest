@@ -1,0 +1,59 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// um_users model
+model um_users {
+  user_id         Int       @id @default(autoincrement())
+  user_name       String
+  user_email      String    @unique
+  user_password   String
+  user_gender     String
+  user_number     String
+  user_role_id    Int?
+  user_created_at DateTime  @default(now())
+  user_updated_at DateTime  @default(now())
+  user_deleted_at DateTime?
+
+  um_roles um_roles? @relation(fields: [user_role_id], references: [role_id])
+
+  @@index([user_id])
+}
+
+// um_roles model
+model um_roles {
+  role_id         Int        @id @unique @default(autoincrement())
+  role_name       String
+  role_slug       RoleSlug   @unique
+  role_created_at DateTime   @default(now())
+  role_updated_at DateTime   @default(now())
+  role_deleted_at DateTime?
+  users           um_users[]
+
+  @@index([role_id])
+}
+
+model um_email_templates {
+  et_id         Int       @id @unique @default(autoincrement())
+  et_name       String
+  et_slug       String    @unique
+  et_data       String
+  et_subject    String
+  et_created_at DateTime  @default(now())
+  et_updated_at DateTime  @default(now())
+  et_deleted_at DateTime?
+}
+
+enum RoleSlug {
+  super_admin
+  admin
+  manager
+  team_lead
+  employee
+}
