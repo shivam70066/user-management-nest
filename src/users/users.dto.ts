@@ -55,3 +55,15 @@ export class userDetails {
   @IsNotEmpty({ message: "Role slug is empty" })
   role_slug: RoleSlug
 }
+
+export class ChangePasswordBody{
+
+  @IsNotEmpty({ message: 'New Password is empty' })
+  @Length(8, 20, { message: "Password must be 8 characters long" })
+  newPassword: string
+
+
+  @IsNotEmpty({ message: 'Old password is empty' })
+  @Length(8, 20, { message: "Password must be 8 characters long" })
+  oldPassword: string
+}

@@ -4,8 +4,10 @@ export interface LoginData{
 }
 
 export interface TokenPayload{
+    email:string,
+    id: Number,
     name: string,
-    role_slug: string
+    role_slug: string,
 }
 
 export interface TemplateBody{

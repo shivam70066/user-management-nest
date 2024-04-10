@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
 
 
 @Injectable()
@@ -19,6 +20,8 @@ export class AuthService {
                 },
             },
             select: {
+                user_email:true,
+                user_id:true,
                 user_name: true,
                 user_password: true,
                 um_roles: {
@@ -36,6 +39,8 @@ export class AuthService {
 
         if (isPasswordValid) {
             return {
+                email: isValidUser.user_email,
+                id : isValidUser.user_id,
                 name: isValidUser.user_name,
                 role_slug: isValidUser.um_roles.role_slug
             }
@@ -90,5 +95,20 @@ export class AuthService {
     })
     return empID.role_id
 }
+
+    async decodetoken(token:string){
+        try {
+            const decoded = jwt.decode(token);
+            return decoded;
+          } catch (error) {
+            // Handle error (e.g., invalid token)
+            throw new Error('Token decoding failed');
+          }
+    }
+
+
+    
+
+    
 
 }

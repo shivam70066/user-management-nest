@@ -26,7 +26,18 @@ export class UsersService {
         sortOrder: string
     ) {
         const start = pageIndex * pagePerItem;
+        console.log(sortBy)
+        const orderBy: any = sortBy=="user_role"?{
+            um_roles:{
+                role_name: sortOrder
+            }
+        }:{
+            [sortBy]: sortOrder
+        }
         const user = await this.prisma.um_users.findMany({
+            include: {
+                um_roles: true 
+              },
             where: {
                 NOT: {
                     user_role_id: 13
@@ -38,12 +49,11 @@ export class UsersService {
                     { user_email: { contains: searchTerm, mode: 'insensitive' } },
                     { user_number: { contains: searchTerm, mode: 'insensitive' } },
                     { user_gender: { contains: searchTerm, mode: 'insensitive' } },
+                    { um_roles: { role_name: { contains: searchTerm , mode: 'insensitive' } } }
                 ],
             },
 
-            orderBy: {
-                [sortBy]: sortOrder,
-            },
+            orderBy,
             skip: start,
             take: pagePerItem,
         })
@@ -68,6 +78,7 @@ export class UsersService {
                     { user_email: { contains: searchTerm, mode: 'insensitive' } },
                     { user_number: { contains: searchTerm, mode: 'insensitive' } },
                     { user_gender: { contains: searchTerm, mode: 'insensitive' } },
+                    { um_roles: { role_name: { contains: searchTerm , mode: 'insensitive' } } }
                 ],
             }
         });
@@ -175,6 +186,32 @@ export class UsersService {
         return false
     }
 
+    async changePassword(oldPassword:string, newPassword:string,id:number ){
+        const userHashPassword = await this.prisma.um_users.findFirst({
+            where:{
+                user_id: id
+            },
+            select:{
+                user_password:true
+            }
+        })
+
+        const isPasswordTrue = await bcrypt.compare(oldPassword, userHashPassword.user_password);
+
+        if(isPasswordTrue){
+            const updatePassword = await bcrypt.hash(newPassword, 10);
+            await this.prisma.um_users.update({
+                where:{
+                    user_id:id
+                },data:{
+                    user_password: updatePassword
+                }
+            })
+            return true
+        }
+        return false;
+
+    }
 
 
 }

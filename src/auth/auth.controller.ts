@@ -1,5 +1,5 @@
 import { AuthService } from './auth.service';
-import { Body, Controller, Post, Res, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UsePipes, ValidationPipe } from '@nestjs/common';
 import { LoginDTO, signUpDTO } from './DTO/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { TokenPayload } from './interfaces/interfaces';
@@ -12,6 +12,19 @@ export class AuthController {
         private readonly jwtService: JwtService,
     ) { }
 
+    @Get('/me')
+    async decodeToken(@Req() req: Request, @Res() res: Response) {
+        const header = req.headers;
+        const auth = header['authorization']
+        const token = auth.substring(7);
+        try {
+            const decoded = this.jwtService.decode(token);
+            return res.json({ data: decoded })
+        } catch (error) {
+            throw new Error('Token decoding failed');
+        }
+    }
+
     @Post('/login')
     @UsePipes(ValidationPipe)
     async login(@Body() body: LoginDTO, @Res() res: Response) {
@@ -21,9 +34,13 @@ export class AuthController {
 
             if (isValidUser) {
                 const payload: TokenPayload = {
+                    email: isValidUser.email,
+                    id: isValidUser.id,
                     name: isValidUser.name,
                     role_slug: isValidUser.role_slug,
                 };
+
+                console.log(payload)
                 const token = await this.jwtService.signAsync(payload);
 
                 return res.status(200).json({ status: 200, msg: "Login Successfully", token: token });
@@ -64,5 +81,12 @@ export class AuthController {
             return res.status(500).json({ status: 500, msg: "Internal Server Error" });
         }
     }
+
+
+
+
+
+
+
 }
 

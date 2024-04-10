@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Response } from 'express';
-import {  dataDTO, userDetails } from './users.dto';
+import { ChangePasswordBody, dataDTO, userDetails } from './users.dto';
+import { changePasswordBody } from './interfaces';
 
 
 @Controller('users')
@@ -46,6 +47,28 @@ export class UsersController {
             return res.status(500).json({ error: 'Internal server error' });
         }
     }
+    @Put('changePassword/:id')
+    @UsePipes(ValidationPipe)
+    async changePassword(@Body() body: ChangePasswordBody, @Res() res: Response,@Param('id') id: string) {
+        console.log(id)
+        try {
+            console.log( body.newPassword+body.oldPassword)
+            const isPasswordChanged = await this.userServices.changePassword(body.oldPassword,
+                body.newPassword, 
+                Number(id)
+            )
+            if(isPasswordChanged){
+                return res.status(200).json({msg: "Password Changed"})
+            }
+            return res.status(400).json({msg:"Old Password is wrong"})
+            
+        }
+        catch (error) {
+            console.error("Error creating user:", error);
+            return res.status(500).json({ status: 500, msg: "Internal Server Error" });
+
+        }
+    }
 
     @Get(':id')
     async getUser(@Param('id') id: string, @Res() res: Response) {
@@ -78,10 +101,8 @@ export class UsersController {
 
     @Put(':id')
     async updateUser(@Body() body: dataDTO, @Param('id') id: string, @Res() res: Response) {
-        console.log(body)
 
         const isEmailExist = await this.userServices.isEmailExist(body.email, body.name, Number(id));
-        console.log(isEmailExist)
 
         if (isEmailExist) {
             return res.status(409).json({
@@ -89,30 +110,27 @@ export class UsersController {
             })
         }
 
-        const isUpdated = await this.userServices.updateUser(body,Number(id));
-        if(isUpdated)  return res.status(200).json({ status:200,msg:"User details updated ",data: "data" })
+        const isUpdated = await this.userServices.updateUser(body, Number(id));
+        if (isUpdated) return res.status(200).json({ status: 200, msg: "User details updated ", data: "data" })
 
         return res.status(400).json({ msg: "Error in update" })
     }
 
     @Post('')
-    async addUser(@Body() body: userDetails, @Res() res: Response){
-        
-        try{
+    async addUser(@Body() body: userDetails, @Res() res: Response) {
+
+        try {
 
             const isEmailExist = await this.userServices.isEmailregistered(body.email);
-            if(isEmailExist){
-                return res.status(403).json({status:403,msg:"Email already registered"})
+            if (isEmailExist) {
+                return res.status(403).json({ status: 403, msg: "Email already registered" })
             }
-            
-            const roleID = await this.userServices.findRoleIDBySlug(body.role_slug);
-            
-            const userAdded = await this.userServices.addUser(body, roleID);
 
-            console.log(userAdded)
-            
-            if(userAdded)
-                return res.status(200).json({status: 200, msg: "User Created Successfully." })
+            const roleID = await this.userServices.findRoleIDBySlug(body.role_slug);
+
+            const userAdded = await this.userServices.addUser(body, roleID);
+            if (userAdded)
+                return res.status(200).json({ status: 200, msg: "User Created Successfully." })
         }
         catch (error) {
             console.error("Error creating user:", error);
@@ -120,5 +138,7 @@ export class UsersController {
         }
 
     }
+
+
 }
 
