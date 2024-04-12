@@ -29,7 +29,6 @@ export class MailerService {
 
 
     const { from, recipent, subject, html } = data;
-    console.log(html)
     const transport = this.mailTransport();
     const options: Mail.Options = {
       from: from ?? {

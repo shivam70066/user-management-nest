@@ -3,7 +3,6 @@ import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
-
 @Injectable()
 export class AuthService {
 
@@ -18,13 +17,10 @@ export class AuthService {
                     equals: email,
                     mode: 'insensitive',
                 },
-                um_roles:{
-                    role_slug:"super_admin"
-                }
             },
             select: {
-                user_email:true,
-                user_id:true,
+                user_email: true,
+                user_id: true,
                 user_name: true,
                 user_password: true,
                 um_roles: {
@@ -43,14 +39,13 @@ export class AuthService {
         if (isPasswordValid) {
             return {
                 email: isValidUser.user_email,
-                id : isValidUser.user_id,
+                id: isValidUser.user_id,
                 name: isValidUser.user_name,
                 role_slug: isValidUser.um_roles.role_slug
             }
         }
         return false;
     }
-
 
     async isEmailAlreadyRegistered(email: string): Promise<boolean> {
         const isRegistered = await this.prisma.um_users.findFirst({
@@ -86,32 +81,25 @@ export class AuthService {
         return false
     }
 
+    async getEmpID() {
+        const empID = await this.prisma.um_roles.findFirst({
+            where: {
+                role_slug: "employee"
+            },
+            select: {
+                role_id: true
+            }
+        })
+        return empID.role_id
+    }
 
-    async getEmpID(){
-    const empID = await this.prisma.um_roles.findFirst({
-        where: {
-            role_slug: "employee"
-        },
-        select: {
-            role_id: true
-        }
-    })
-    return empID.role_id
-}
-
-    async decodetoken(token:string){
+    async decodetoken(token: string) {
         try {
             const decoded = jwt.decode(token);
             return decoded;
-          } catch (error) {
+        } catch (error) {
             // Handle error (e.g., invalid token)
             throw new Error('Token decoding failed');
-          }
+        }
     }
-
-
-    
-
-    
-
 }
