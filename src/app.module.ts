@@ -1,16 +1,11 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import {AuthMiddleware} from './middlewares/auth.middleware'
-import { EmailTemplatesModule } from './email-templates/email-templates.module';
-import { MailerModule } from './mailer/mailer.module';
-import { SettingsModule } from './settings/settings.module';
+import { AdminModule } from './admin/admin.module';
 
+import {AuthMiddleware} from './middlewares/auth.middleware'
 @Module({
-  imports: [AuthModule, UsersModule, EmailTemplatesModule, MailerModule, SettingsModule
-  ],
+  imports: [AdminModule],
   controllers: [AppController],
   providers: [AppService],
 })

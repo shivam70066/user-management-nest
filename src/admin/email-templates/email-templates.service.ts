@@ -1,6 +1,6 @@
 import { Injectable, Body } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { TemplateBody } from 'src/auth/interfaces/interfaces';
+import { TemplateBody } from 'src/admin/auth/interfaces/interfaces';
 
 @Injectable()
 export class EmailTemplatesService {

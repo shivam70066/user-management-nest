@@ -1,7 +1,7 @@
 import { EmailTemplatesService } from './email-templates.service';
 import { Body, Controller, Get, Inject, Param, Put, Res } from '@nestjs/common';
 import { Response } from 'express';
-import { TemplateBody } from 'src/auth/interfaces/interfaces';
+import { TemplateBody } from 'src/admin/auth/interfaces/interfaces';
 
 @Controller('email-templates')
 export class EmailTemplatesController {
