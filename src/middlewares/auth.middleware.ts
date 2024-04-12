@@ -1,6 +1,5 @@
 import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { chownSync } from 'fs';
 import * as jwt from 'jsonwebtoken';
 
 

@@ -26,7 +26,6 @@ export class UsersService {
         sortOrder: string
     ) {
         const start = pageIndex * pagePerItem;
-        console.log(sortBy)
         const orderBy: any = sortBy=="user_role"?{
             um_roles:{
                 role_name: sortOrder
@@ -168,9 +167,7 @@ export class UsersService {
     }
 
     async addUser(userData: userDetails, roleID: number) {
-        console.log(userData)
         const password = await bcrypt.hash(userData.password, 10);
-        console.log(password)
         const created = await this.prisma.um_users.create({
             data: {
                 user_name: userData.name,

@@ -9,10 +9,10 @@ CREATE TABLE "um_users" (
     "user_password" TEXT NOT NULL,
     "user_gender" TEXT NOT NULL,
     "user_number" TEXT NOT NULL,
-    "user_role_id" INTEGER,
     "user_created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_deleted_at" TIMESTAMP(3),
+    "user_role_id" INTEGER,
 
     CONSTRAINT "um_users_pkey" PRIMARY KEY ("user_id")
 );
@@ -21,10 +21,10 @@ CREATE TABLE "um_users" (
 CREATE TABLE "um_roles" (
     "role_id" SERIAL NOT NULL,
     "role_name" TEXT NOT NULL,
-    "role_slug" "RoleSlug" NOT NULL,
     "role_created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "role_updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "role_deleted_at" TIMESTAMP(3),
+    "role_slug" "RoleSlug" NOT NULL,
 
     CONSTRAINT "um_roles_pkey" PRIMARY KEY ("role_id")
 );
@@ -34,11 +34,11 @@ CREATE TABLE "um_email_templates" (
     "et_id" SERIAL NOT NULL,
     "et_name" TEXT NOT NULL,
     "et_slug" TEXT NOT NULL,
-    "et_data" TEXT NOT NULL,
-    "et_subject" TEXT NOT NULL,
     "et_created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "et_updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "et_deleted_at" TIMESTAMP(3),
+    "et_data" TEXT NOT NULL,
+    "et_subject" TEXT NOT NULL,
 
     CONSTRAINT "um_email_templates_pkey" PRIMARY KEY ("et_id")
 );

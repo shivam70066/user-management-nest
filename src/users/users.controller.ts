@@ -50,7 +50,7 @@ export class UsersController {
     @Put('changePassword/:id')
     @UsePipes(ValidationPipe)
     async changePassword(@Body() body: ChangePasswordBody, @Res() res: Response,@Param('id') id: string) {
-        console.log(id)
+        
         try {
             console.log( body.newPassword+body.oldPassword)
             const isPasswordChanged = await this.userServices.changePassword(body.oldPassword,
